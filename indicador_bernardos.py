@@ -244,6 +244,10 @@ def candlestick_plot(dates_btc_tweets, usr_name, kde_info, df_clustering=None):
             List of all dates of BTC tweets
         usr_name: string
             User name
+        kde_info: object
+            KDE model information
+        df_clustering:
+            Clustering information to change tweets colors
 
         Raises
         ------
@@ -365,8 +369,6 @@ def candlestick_plot(dates_btc_tweets, usr_name, kde_info, df_clustering=None):
 
 
 """ EXECUTION """
-
-
 
 # Users: GonBernardos, PeterSchiff
 usr_name        = "GonBernardos" 
