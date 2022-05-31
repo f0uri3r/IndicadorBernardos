@@ -1,4 +1,4 @@
-# IndicadorBernardos
+# Indicador Bernardos
 Código para el cálculo y análisis del indicador Bernardos.
 
 
