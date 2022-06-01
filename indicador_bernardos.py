@@ -403,11 +403,6 @@ for i in range(len(all_btc_tweets)):
 
     df_btc_tweets.iloc[i,:] = [tw.full_text, tw.created_at, tw.id, isreply]
 
-if usr_name == "GonBernardos":
-    df_old_btc_tweets         = pd.read_excel("old_btc_tweets.xlsx")
-    df_old_btc_tweets["Date"] = pd.to_datetime( df_old_btc_tweets["Date"] )
-    df_btc_tweets = pd.concat([df_old_btc_tweets, df_btc_tweets])
-
 df_btc_tweets = df_btc_tweets.sort_values(by=["Date"])
 df_btc_tweets = df_btc_tweets[df_btc_tweets["Is_reply"] == False]
 dates_btc_tweets = df_btc_tweets["Date"].to_list()
