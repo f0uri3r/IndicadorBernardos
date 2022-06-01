@@ -377,8 +377,8 @@ btc_tweets_file = "all_btc_tweets_" + usr_name + ".npy"
 # Use 
 get_tweets = False
 # Your API keys (Not necessary if you don't want to update tweets and you have a .npy file)
-consumer_key    = "2nWFzwNQCvj3ndnQLlYnTpFBQ"
-consumer_secret = "N3xOp0I4FaiBiYkcuajlFM3FrcGTUizjSUUpCZLfQAacxJZXpT"
+consumer_key    = ""
+consumer_secret = ""
 
 if get_tweets:
     api = init_tweepy_api(consumer_key, consumer_secret)
