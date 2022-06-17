@@ -31,6 +31,7 @@ import datetime as dt
 import time
 import urllib.request
 import json
+import sys
 
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
@@ -285,7 +286,7 @@ def candlestick_plot(dates_btc_tweets, usr_name, kde_info, df_clustering=None):
     df_BTC["log_High"]  = np.log(df_BTC["High"])
     df_BTC["log_Low"]   = np.log(df_BTC["Low"])
     df_BTC["log_Close"] = np.log(df_BTC["Close"])
-    BTC_smooth = savgol_filter(df_BTC["Close"], 14, 3)
+    BTC_smooth = savgol_filter(df_BTC["Close"], 15, 3)
     
 
     fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -377,10 +378,26 @@ btc_tweets_file = "all_btc_tweets_" + usr_name + ".npy"
 # Use 
 get_tweets = False
 # Your API keys (Not necessary if you don't want to update tweets and you have a .npy file)
-consumer_key    = ""
-consumer_secret = ""
+consumer_key    = input("Enter the path of consumer key txt file (press enter if not required): ")
+consumer_secret = input("Enter the path of consumer key secret txt file (press enter if not required): ")
+print(consumer_key)
+print(consumer_secret)
 
-if get_tweets:
+
+# Check if path exists
+if not os.path.exists(btc_tweets_file):
+    try:
+        with open(consumer_key, 'r') as file:
+            consumer_key = file.read().replace("\n", "")
+    except:
+        sys.exit("Consumer key txt not found")
+
+    try:
+        with open('./keys/API_key_secret.txt', 'r') as file:
+            consumer_secret = file.read().replace("\n", "")
+    except:
+        sys.exit("Consumer key secret txt not found")
+
     api = init_tweepy_api(consumer_key, consumer_secret)
     all_btc_tweets = get_btc_tweets(api, usr_name, btc_tweets_file) 
 else:
@@ -414,7 +431,7 @@ df_clustering = dates_clustering(dates_btc_tweets, bandwidth)
 
 
 # Indicator: kernel density estimation
-bandwidth  = 14 # days
+bandwidth  = 15 # days
 kernel     = 'gaussian' 
 gridsearch = False
 kde_model  = kernel_density_estimation(dates_btc_tweets, kernel, bandwidth, gridsearch)
