@@ -1,0 +1,9 @@
+matplotlib==3.5.2
+numpy==1.23.1
+pandas==1.4.3
+pathlib==1.0.1
+plotly==5.9.0
+scipy==1.8.1
+sklearn==0.0
+tqdm==4.64.0
+tweepy==4.10.0
