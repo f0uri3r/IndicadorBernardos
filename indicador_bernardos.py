@@ -354,6 +354,7 @@ def candlestick_plot(dates_btc_tweets, usr_name, kde_info, df_clustering=None):
 
 
     f, ax = plt.subplots()
+    f.set_size_inches(21, 9)
     ax.plot(df_BTC["Date"], density_pred, color="black")
     ax.set_xlabel('Date')
     ax.set_ylabel(r'Indicator $B(t)$', color="black")
@@ -366,7 +367,38 @@ def candlestick_plot(dates_btc_tweets, usr_name, kde_info, df_clustering=None):
     ax2.tick_params(axis='y', colors="C1")
 
 
+def open_keys():
+    key_path    = input("Enter the path of consumer key txt file (press enter if not required): ")
+    secret_path = input("Enter the path of consumer key secret txt file (press enter if not required): ")
+    try:
+        with open(key_path, 'r') as file:
+            key = file.read().replace("\n", "")
+    except:
+        sys.exit("Consumer key txt not found")
+    try:
+        with open(secret_path, 'r') as file:
+            secret = file.read().replace("\n", "")
+    except:
+        sys.exit("Consumer key secret txt not found")
+    return([key, secret])
 
+
+def load_tweets(btc_tweets_file):
+    if not os.path.exists(btc_tweets_file):
+        keys = open_keys()
+        api = init_tweepy_api(keys[0], keys[1])
+        return(get_btc_tweets(api, usr_name, btc_tweets_file))
+    else:
+        get_tweets = ""
+        while (get_tweets != "y") == (get_tweets != "n"):
+            get_tweets = input(f"{btc_tweets_file} file detected. Update? (y/n): ")
+            get_tweets = get_tweets.lower()
+        if get_tweets == "y":
+            keys = open_keys()
+            api = init_tweepy_api(keys[0], keys[1])
+            return(get_btc_tweets(api, usr_name, btc_tweets_file))
+        else:
+            return(np.load(btc_tweets_file, allow_pickle=True))
 
 
 """ EXECUTION """
@@ -376,32 +408,8 @@ usr_name        = "GonBernardos"
 btc_tweets_file = "all_btc_tweets_" + usr_name + ".npy"
 
 # Use 
-get_tweets = False
-# Your API keys (Not necessary if you don't want to update tweets and you have a .npy file)
-consumer_key    = input("Enter the path of consumer key txt file (press enter if not required): ")
-consumer_secret = input("Enter the path of consumer key secret txt file (press enter if not required): ")
-print(consumer_key)
-print(consumer_secret)
-
-
-# Check if path exists
-if not os.path.exists(btc_tweets_file):
-    try:
-        with open(consumer_key, 'r') as file:
-            consumer_key = file.read().replace("\n", "")
-    except:
-        sys.exit("Consumer key txt not found")
-
-    try:
-        with open('./keys/API_key_secret.txt', 'r') as file:
-            consumer_secret = file.read().replace("\n", "")
-    except:
-        sys.exit("Consumer key secret txt not found")
-
-    api = init_tweepy_api(consumer_key, consumer_secret)
-    all_btc_tweets = get_btc_tweets(api, usr_name, btc_tweets_file) 
-else:
-    all_btc_tweets = np.load(btc_tweets_file, allow_pickle=True)
+## Your API keys (Not necessary if you don't want to update tweets and you have a .npy file)
+all_btc_tweets = load_tweets(btc_tweets_file)
 
 # BTC tweets dataframe preprocessing
 df_btc_tweets = pd.DataFrame({"Tweet": len(all_btc_tweets)*[None],
@@ -439,4 +447,6 @@ kde_model  = kernel_density_estimation(dates_btc_tweets, kernel, bandwidth, grid
 # Results
 candlestick_plot(dates_btc_tweets, usr_name, kde_model, df_clustering)
 
+plt.savefig('output/plot_2.png')
 plt.show()
+
